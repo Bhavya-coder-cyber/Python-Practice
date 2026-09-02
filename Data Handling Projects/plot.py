@@ -33,7 +33,6 @@ def graph():
         plt.title('Weather Conditions')
         plt.xlabel('Conditions')
         plt.ylabel('Frequency')
-        plt.tight_layout()
         plt.show()
 
 graph()
