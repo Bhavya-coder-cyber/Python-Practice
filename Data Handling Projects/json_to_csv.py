@@ -35,5 +35,5 @@ def main():
     data = load_json_file(INPUT_FILE)
     convert_to_csv(data, OUTPUT_FILE)
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     main()
