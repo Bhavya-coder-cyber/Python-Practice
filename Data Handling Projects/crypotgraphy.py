@@ -72,7 +72,14 @@ def view_notes():
         print("Invalid Input")
 
 def search_notes():
-    pass
+    keyword = input("Enter the keyword to search in notes: ").strip().lower()
+    data = load_file()
+    found = (note for note in data if keyword in note["title"].lower())
+    if not found:
+        print("Not found in the notes")
+    else:
+        for note in found:
+            print(f"{note["title"]} - {note["timestamp"]}")
 
 def main():
     while True:
