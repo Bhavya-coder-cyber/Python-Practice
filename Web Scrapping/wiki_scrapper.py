@@ -11,7 +11,7 @@ def get_headers(URL):
                       "Chrome/139.0.0.0 Safari/537.36"
     }
     try:
-        response = requests.get(URL, headers=headers, timeout=10)
+        response = requests.get(URL, headers=headers, timeout=10) #This response object contains the HTML content of the page
         response.raise_for_status()
     except requests.RequestException as e:
         print(f"Error: {e}")
