@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
+import wget
 
 BASE_URL = "https://books.toscrape.com/"
 IMG_DIR = "images"
@@ -41,7 +42,11 @@ def scrape_and_download_image():
         print(f"filepath - {filepath}")
 
         print(f"Downloading {img_url} to {filepath}")
-        download_image(img_url, filepath)
+        # download_image(img_url, filepath)
+
+        # Using wget library to download images
+        wget.download(img_url, filepath)
+
     print("All images downloaded successfully")
 
 if __name__ == "__main__":
