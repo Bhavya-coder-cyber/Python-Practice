@@ -3,6 +3,8 @@ import csv
 import os
 from datetime import datetime
 import matplotlib.pyplot as plt
+import schedule
+import time
 
 API_URL = "https://api.coingecko.com/api/v3/coins/markets"
 
@@ -54,14 +56,25 @@ def plot_graph(coin_id):
     plt.tight_layout()
     plt.show()
 
-def main():
-    
-    print("Fetching coin data...")
+def job():
+    print("Fetching coin data hourly...")
     crypto_data = fetch_coin_data()
     save_to_csv(crypto_data)
-    coin_id = input("Enter the coin ID: ").strip().lower()
-    if coin_id:
-        plot_graph(coin_id)
 
-if __name__ == "__main__":
-    main()
+schedule.every().hour.at(":00").do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+
+# def main():
+    
+#     print("Fetching coin data...")
+#     crypto_data = fetch_coin_data()
+#     save_to_csv(crypto_data)
+#     coin_id = input("Enter the coin ID: ").strip().lower()
+#     if coin_id:
+#         plot_graph(coin_id)
+
+# if __name__ == "__main__":
+#     main()
