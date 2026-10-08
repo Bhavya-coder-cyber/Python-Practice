@@ -1,0 +1,6 @@
+John,25,50000
+Alice,30,65000
+Bob,invalid,45000
+David,28,invalid
+Sarah,35,80000
+Mike,22,40000
