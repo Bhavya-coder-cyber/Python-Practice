@@ -228,58 +228,254 @@ import getpass
 #Q4
 import shutil
 
-EXTENSION_MAP = {
-    "PDFs": [".pdf"],
-    "Images": [".jpg", ".jpeg", ".png"],
-    "Videos": [".mp4", ".mkv"],
-    "Documents": [".doc", ".docx", ".txt"],
-    "Music": [".mp3", ".wav", ".flac"]
-}
+# EXTENSION_MAP = {
+#     "PDFs": [".pdf"],
+#     "Images": [".jpg", ".jpeg", ".png"],
+#     "Videos": [".mp4", ".mkv"],
+#     "Documents": [".doc", ".docx", ".txt"],
+#     "Music": [".mp3", ".wav", ".flac"]
+# }
 
-LOG_FILE = "file_organizer_log.txt"
+# LOG_FILE = "file_organizer_log.txt"
 
-def get_destination_folder(filename):
-    ext = os.path.splitext(filename)[1].lower()
-    for folder, extensions in EXTENSION_MAP.items():
-        if ext in extensions:
-            return folder
-    return "Others"
+# def get_destination_folder(filename):
+#     ext = os.path.splitext(filename)[1].lower()
+#     for folder, extensions in EXTENSION_MAP.items():
+#         if ext in extensions:
+#             return folder
+#     return "Others"
 
-def get_unique_path(folder, filename):
-    name, ext = os.path.splitext(filename)
-    destination = os.path.join(folder, filename)
-    counter = 1
-    while os.path.exists(destination):
-        new_filename = f"{name}_{counter}{ext}"
-        destination = os.path.join(folder, new_filename)
-        counter += 1
-    return destination
+# def get_unique_path(folder, filename):
+#     name, ext = os.path.splitext(filename)
+#     destination = os.path.join(folder, filename)
+#     counter = 1
+#     while os.path.exists(destination):
+#         new_filename = f"{name}_{counter}{ext}"
+#         destination = os.path.join(folder, new_filename)
+#         counter += 1
+#     return destination
 
-def sort_files(folder_path):
-    for file in os.listdir(folder_path):
-        if os.path.splitext(file)[1].lower() == ".py":
-            continue
+# def sort_files(folder_path):
+#     for file in os.listdir(folder_path):
+#         if os.path.splitext(file)[1].lower() == ".py":
+#             continue
         
-        full_path = os.path.join(folder_path, file)
+#         full_path = os.path.join(folder_path, file)
 
-        if os.path.isfile(full_path):
-            folder = get_destination_folder(file)
-            dest_folder_path = os.path.join(folder_path, folder)
+#         if os.path.isfile(full_path):
+#             folder = get_destination_folder(file)
+#             dest_folder_path = os.path.join(folder_path, folder)
 
-            os.makedirs(dest_folder_path, exist_ok=True)
+#             os.makedirs(dest_folder_path, exist_ok=True)
 
-            shutil.move(full_path, get_unique_path(dest_folder_path, file))
-            log_entry = f"Moved {file} to {folder}\n"
-            with open(LOG_FILE, "a", encoding="utf-8") as log_file:
-                log_file.write(log_entry)
+#             shutil.move(full_path, get_unique_path(dest_folder_path, file))
+#             log_entry = f"Moved {file} to {folder}\n"
+#             with open(LOG_FILE, "a", encoding="utf-8") as log_file:
+#                 log_file.write(log_entry)
 
-            print(f"Moved {file} to {folder}")
-if __name__ == "__main__":
-    folder_path = input("Enter the folder path or leave blank: ").strip()
-    folder = folder_path or os.getcwd()
+#             print(f"Moved {file} to {folder}")
+# if __name__ == "__main__":
+#     folder_path = input("Enter the folder path or leave blank: ").strip()
+#     folder = folder_path or os.getcwd()
 
-    if not os.path.isdir(folder):
-        print(f"Invalid folder path: {folder}")
+#     if not os.path.isdir(folder):
+#         print(f"Invalid folder path: {folder}")
+#     else:
+#         sort_files(folder)
+#         print("File sorting completed.")
+
+#Q5
+TASK_FILE = "task_list.txt"
+TIMER_FILE = "timer_log.txt"
+
+def load_taks():
+    tasks = [] 
+    if os.path.exists(TASK_FILE):
+        with open(TASK_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                text, duration, status = line.strip().split("||")
+                tasks.append({"text": text, "duration": int(duration.split()[0]), "status": status == "done"})
+    return tasks
+
+def save_tasks(tasks):
+    with open(TASK_FILE, "w", encoding="utf-8") as f:
+        for task in tasks:
+            status = "done" if task["status"] else "not done"
+            f.write(f"{task['text']}||{task['duration']} mins||{status}\n")
+
+def display_tasks(tasks):
+    if not tasks:
+        print("No tasks found.")
     else:
-        sort_files(folder)
-        print("File sorting completed.")
+        for i, task in enumerate(tasks, 1):
+            if task["status"]:
+                completed = "✅" if task["status"] else " "
+                print(f"{i}. {completed} {task['text']}")
+            else:
+                print(f"{i}. {task['text']} - Duration: {task['duration']} mins")
+    print()
+
+def start_task_timer(task):
+    task_name = task["text"]
+    planned_minutes = task["duration"]
+    planned_seconds = planned_minutes * 60
+
+    print(
+        f"Starting timer for task: "
+        f"{task_name} ({planned_minutes} mins)"
+    )
+
+    start_time = time.monotonic()
+    status = "completed"
+
+    try:
+        while True:
+            elapsed = time.monotonic() - start_time
+            remaining = planned_seconds - elapsed
+
+            if remaining <= 0:
+                break
+
+            mins, secs = divmod(int(remaining), 60)
+            print(f"{mins:02}:{secs:02}", end="\r", flush=True)
+
+            # Sleep briefly so the timer remains responsive.
+            time.sleep(min(0.2, remaining))
+
+        print("\nTask completed!")
+
+    except KeyboardInterrupt:
+        status = "interrupted"
+        print("\nTimer interrupted.")
+
+    finally:
+        total_time = min(
+            time.monotonic() - start_time,
+            planned_seconds
+        )
+
+        remaining_seconds = max(0, planned_seconds - total_time)
+        task["duration"] = int(remaining_seconds // 60)
+        task["status"] = status == "completed"
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Record this timer session.
+        with open(TIMER_FILE, "a", encoding="utf-8") as f:
+            f.write(
+                f"Task: {task_name} - "
+                f"Duration: {planned_minutes} mins - "
+                f"Time Taken: {total_time:.2f} seconds - "
+                f"Date: {timestamp} - "
+                f"Status: {status}\n"
+            )
+
+        # Update the existing task if found.
+        tasks = load_taks()
+
+        task_index = next(
+            (
+                i for i, existing_task in enumerate(tasks)
+                if existing_task["text"] == task_name
+            ),
+            None
+        )
+
+        if task_index is not None:
+            tasks[task_index] = task
+        else:
+            tasks.append(task)
+
+        save_tasks(tasks)
+
+        print(f"Task '{task_name}' saved.")
+        print(f"Actual time spent: {total_time:.2f} seconds")
+        print(f"Status: {status}")
+
+def task_summary():
+    if not os.path.exists(TIMER_FILE):
+        print("No task summary available.")
+        return
+
+    total_sessions = 0
+    completed_tasks = 0
+    total_time = 0.0
+    task_times = {}
+
+    with open(TIMER_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            try:
+                parts = line.strip().split(" - ")
+                task_name = parts[0].split(": ")[1]
+                status = parts[4].split(": ")[1]
+                total_sessions += 1
+                time_taken = float(parts[2].split(": ")[1].split()[0])
+                total_time += time_taken
+                task_times[task_name] = task_times.get(task_name, 0) + time_taken
+                if status == "completed":
+                    print(f"Processing line: {line.strip()}")
+                    completed_tasks += 1 if parts[4].split(": ")[1] == "completed" else 0
+            except (ValueError, IndexError):
+                pass
+
+    if completed_tasks == 0:
+        print("No completed tasks found.")
+        return
+
+    print("\n========== TASK SUMMARY ==========")
+    print(f"Total task sessions: {total_sessions}")
+    print(f"Total complete task sessions: {completed_tasks}")
+    print(f"Total Incomplete task sessions: {total_sessions - completed_tasks}")
+    print(f"Total time spent: {total_time / 60:.2f} minutes")
+    print(f"Average time per session: "
+          f"{total_time / total_sessions / 60:.2f} minutes")
+
+    print("\nTask-wise breakdown:")
+    for task_name, seconds in task_times.items():
+        print(f"- {task_name}: {seconds / 60:.2f} minutes")
+
+    print("==================================")
+
+def tasklist_manager():
+    tasks = load_taks()
+    while True:
+        print("\n------Task List Manager-------\n")
+        print("1. Add Task")
+        print("2. View Tasks")
+        print("3. Start Task Timer")
+        print("4. View Task Summary")
+        print("5. Exit")
+        choice = input("Enter your choice: ").strip()
+        
+        match choice:
+            case "1":
+                task_text = input("Enter the task: ").strip()
+                task_duration = input("Enter the duration in minutes: ").strip()
+                if task_text and task_duration.isdigit():
+                    tasks.append({"text": task_text, "duration": int(task_duration), "status": False})
+                    save_tasks(tasks)
+                    print("Task added successfully.")
+                else:
+                    print("Invalid input. Task cannot be empty and duration must be a number.")
+            case "2":
+                display_tasks(tasks)
+            case "3":
+                display_tasks(tasks)
+                try:
+                    task_index = int(input("Enter the task number to start timer: ").strip())
+                    if 1 <= task_index <= len(tasks):
+                        start_task_timer(tasks[task_index - 1])
+                    else:
+                        print("Invalid task number.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+            case "4":
+                task_summary()
+            case "5":
+                print("Exiting Task List Manager.")
+                break
+            case _:
+                print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    tasklist_manager()
