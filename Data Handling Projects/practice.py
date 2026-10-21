@@ -49,67 +49,72 @@ import os
 #Q2
 import json
 
-SETTINGS_FILE = 'settings.json'
+# SETTINGS_FILE = 'settings.json'
 
-def load_settings():
-    if not os.path.exists(SETTINGS_FILE):
-        return {}
-    try:
-        with open(SETTINGS_FILE, 'r') as f:
-            return json.load(f)
-    except:
-        return {}
+# def load_settings():
+#     if not os.path.exists(SETTINGS_FILE):
+#         return {}
+#     try:
+#         with open(SETTINGS_FILE, 'r') as f:
+#             return json.load(f)
+#     except:
+#         return {}
 
-def save_settings(data):
-    with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+# def save_settings(data):
+#     with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
+#         json.dump(data, f, indent=2)
 
-def add_settings():
-    settings = load_settings()
-    settings['username'] = input("Enter username: ")
-    settings['theme'] = input("Enter theme: ")
-    settings['language'] = input("Enter language: ")
-    save_settings(settings)
+# def add_settings():
+#     settings = load_settings()
+#     settings['username'] = input("Enter username: ")
+#     settings['theme'] = input("Enter theme: ")
+#     settings['language'] = input("Enter language: ")
+#     save_settings(settings)
 
-def edit_settings():
-    settings = load_settings()
-    field = input("Enter the field to edit: ")
-    field_map = {
-        "username": "username",
-        "theme": "theme",
-        "language": "language"
-    }
-    if field not in field_map:
-        print("Invalid field")
-        return
-    new_value = input("Enter the new value: ")
-    settings[field] = new_value
-    save_settings(settings)
+# def edit_settings():
+#     settings = load_settings()
+#     field = input("Enter the field to edit: ")
+#     field_map = {
+#         "username": "username",
+#         "theme": "theme",
+#         "language": "language"
+#     }
+#     if field not in field_map:
+#         print("Invalid field")
+#         return
+#     new_value = input("Enter the new value: ")
+#     settings[field] = new_value
+#     save_settings(settings)
 
-def display_settings():
-    settings = load_settings()
-    print("Settings:")
-    print(f"Username: {settings.get('username', 'Not found')}")
-    print(f"Theme: {settings.get('theme', 'Not found')}")
-    print(f"Language: {settings.get('language', 'Not found')}")
+# def display_settings():
+#     settings = load_settings()
+#     print("Settings:")
+#     print(f"Username: {settings.get('username', 'Not found')}")
+#     print(f"Theme: {settings.get('theme', 'Not found')}")
+#     print(f"Language: {settings.get('language', 'Not found')}")
 
-def main():
-    while True:
-        print("1. Add settings")
-        print("2. Edit settings")
-        print("3. Display settings")
-        print("4. Exit")
-        choice = input("Enter your choice: ")
-        if choice == "1":
-            add_settings()
-        elif choice == "2":
-            edit_settings()
-        elif choice == "3":
-            display_settings()
-        elif choice == "4":
-            break
-        else:
-            print("Invalid choice")
+# def main():
+#     while True:
+#         print("1. Add settings")
+#         print("2. Edit settings")
+#         print("3. Display settings")
+#         print("4. Exit")
+#         choice = input("Enter your choice: ")
+#         if choice == "1":
+#             add_settings()
+#         elif choice == "2":
+#             edit_settings()
+#         elif choice == "3":
+#             display_settings()
+#         elif choice == "4":
+#             break
+#         else:
+#             print("Invalid choice")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
+
+#Q3
+import requests
+from datetime import datetime
+
