@@ -116,5 +116,78 @@ import json
 
 #Q3
 import requests
-from datetime import datetime
+import matplotlib.pyplot as plt
 
+# EXPENSE_FILE = 'daily_expenses.csv'
+
+# def load_expenses():
+#     categories = []
+#     expenses = [] 
+#     if not os.path.exists(EXPENSE_FILE):
+#         return
+#     try:
+#         with open(EXPENSE_FILE, 'r', newline='') as f:
+#             reader = csv.DictReader(f)
+#             data = list(reader)
+#             for row in data:
+#                 if row['category'] not in categories:
+#                     categories.append(row['category'])
+#                     expenses.append(int(row['amount']))
+#                 else:
+#                     index = categories.index(row['category'])
+#                     expenses[index] += int(row['amount'])
+#     except:
+#         pass
+#     return categories, expenses
+
+# if __name__ == "__main__":
+#     categories, expenses = load_expenses()
+#     print(categories)
+#     print(expenses)
+
+#     plt.figure(figsize=(10, 6))
+#     plt.bar(categories, expenses, color='blue')
+#     plt.title('Daily Expenses')
+#     plt.xlabel('Category')
+#     plt.ylabel('Amount')
+#     plt.savefig('daily_expenses.png')
+#     plt.show()
+
+#Q4
+from cryptography.fernet import Fernet
+
+# VAULT_FILE = 'msg_vault.txt'
+# KEY_FILE = 'new_vault.key'
+
+# def load_or_create_key():
+#     if not os.path.exists(KEY_FILE):
+#         key = Fernet.generate_key()
+#         with open(KEY_FILE, "wb") as f:
+#             f.write(key)
+#     else:
+#         with open(KEY_FILE, "rb") as f:
+#             key = f.read()
+#     return Fernet(key)
+
+# fernet = load_or_create_key()
+# def encrypt(message):
+#     encodedMessage = fernet.encrypt(message.encode()).decode()
+#     with open(VAULT_FILE, "w", encoding="utf-8") as f:
+#         f.write(encodedMessage)
+
+#     print("Message encrypted and saved to", VAULT_FILE)
+
+# def decrypt():
+#     with open(VAULT_FILE, "r", encoding="utf-8") as f:
+#         encodedMessage = f.read()
+#     decode = fernet.decrypt(encodedMessage.encode()).decode()
+#     print(decode)
+
+# if __name__ == "__main__":
+#     message = input("Enter the message: ").strip()
+#     encrypt(message)
+#     decrypt()
+
+#Q5
+
+    
