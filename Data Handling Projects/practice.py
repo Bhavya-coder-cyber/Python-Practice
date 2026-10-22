@@ -189,5 +189,50 @@ from cryptography.fernet import Fernet
 #     decrypt()
 
 #Q5
+from collections import defaultdict
+DATASET = 'activity_data.csv'
 
+def load_dataset():
+    activity = []
+    minutes = []
+    min_durations = []
+    max_durations = []
+    frequency = defaultdict(int)
+    with open(DATASET, 'r', newline='') as f:
+        reader = csv.DictReader(f)
+        data = list(reader)
+        for row in data:
+            if row['activity'] not in activity:
+                activity.append(row['activity'])
+                minutes.append(int(row['duration_minutes']))
+                min_durations.append(int(row['duration_minutes']))
+                max_durations.append(int(row['duration_minutes']))
+            else:
+                index = activity.index(row['activity'])
+                minutes[index] += int(row['duration_minutes'])
+                min_durations[index] = min(min_durations[index], int(row['duration_minutes']))
+                max_durations[index] = max(max_durations[index], int(row['duration_minutes']))
+            frequency[row['activity']] += 1
+    return activity, minutes, frequency, min_durations, max_durations
+
+def form_summary(activity, minutes, frequency, min_durations, max_durations):
+    summary = {}
+    for i in range(len(activity)):
+        summary[activity[i]] = {'minutes': minutes[i], 'frequency': frequency[activity[i]], "average_time": minutes[i] / frequency[activity[i]], "min_duration": min_durations[i], "max_duration": max_durations[i]}
+    return summary
+
+def save_summary(summary):
+    with open('activity_summary.json', 'w') as f:
+        json.dump(summary, f, indent=4)
+
+if __name__ == "__main__":
+    activity, minutes, frequency, min_durations, max_durations = load_dataset()
+    summary = form_summary(activity, minutes, frequency, min_durations, max_durations)
+    save_summary(summary)
+
+    plt.figure(figsize=(10, 6))
+    plt.pie(minutes, labels=activity, autopct='%1.1f%%')
+    plt.title('Activity Distribution')
+    plt.savefig('activity_distribution.png')
+    plt.show()
     

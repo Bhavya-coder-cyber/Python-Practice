@@ -1,0 +1,23 @@
+{
+    "Study": {
+        "minutes": 565,
+        "frequency": 6,
+        "average_time": 94.16666666666667,
+        "min_duration": 75,
+        "max_duration": 120
+    },
+    "Exercise": {
+        "minutes": 205,
+        "frequency": 5,
+        "average_time": 41.0,
+        "min_duration": 25,
+        "max_duration": 55
+    },
+    "Reading": {
+        "minutes": 170,
+        "frequency": 4,
+        "average_time": 42.5,
+        "min_duration": 30,
+        "max_duration": 60
+    }
+}
